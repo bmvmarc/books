@@ -9,9 +9,7 @@ export class Book {
   @Column()
   title: string;
 
-  @ManyToOne(() => Author, (author) => author.books, {
-    eager: true,
-  })
+  @ManyToOne(() => Author, (author) => author.books)
   author: Author;
 
   @Column()

@@ -1,11 +1,17 @@
 import { AppDataSource } from "./data-source";
-import { Author } from "./entity/Author";
 import { Book } from "./entity/Book";
-import { User } from "./entity/User";
+import Fastify from "fastify";
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
+import BookRoutes from "./routes/books";
 
 AppDataSource.initialize()
   .then(async () => {
-    // console.log("Inserting a new user into the database...")
+    console.log(
+      "As I understand, here we run the server bc DB is connected all right"
+    );
+
+    startServer();
     // const user = new User()
     // user.firstName = "Timber"
     // user.lastName = "Saw"
@@ -22,13 +28,13 @@ AppDataSource.initialize()
     // })
 
     // ___________________________________
-    const authorRepository = AppDataSource.getRepository(Author);
+    // const authorRepository = AppDataSource.getRepository(Author);
     // const author = new Author();
     // author.name = "Fiodor Dostojewski";
     // author.year = 1821;
     // await authorRepository.save(author);
 
-    const booksRepo = AppDataSource.getRepository(Book);
+    // const booksRepo = AppDataSource.getRepository(Book);
     // const book1 = new Book();
     // book1.title = "Crime and Punishment";
     // book1.year = 1866;
@@ -47,8 +53,42 @@ AppDataSource.initialize()
 
     // console.log(allAuthorsWithBooks);
 
-    const [bookQ, quantity] = await booksRepo.findAndCount();
+    // const [bookQ, quantity] = await booksRepo.findAndCount();
 
-    console.log(bookQ, quantity);
+    // console.log(bookQ, quantity);
   })
   .catch((error) => console.log(error));
+
+const startServer = async () => {
+  const fastify = Fastify({ logger: true });
+
+  fastify.register(fastifySwagger, {});
+  fastify.register(fastifySwaggerUi, {
+    routePrefix: "/docs",
+    uiConfig: {
+      docExpansion: "full",
+      deepLinking: false,
+    },
+  });
+
+  fastify.register(BookRoutes);
+
+  const PORT = 5000;
+
+  const start = async () => {
+    try {
+      await fastify.listen({ port: PORT });
+    } catch (error) {
+      fastify.log.error(error);
+      process.exit(1);
+    }
+  };
+
+  start();
+
+  const booksRepo = AppDataSource.getRepository(Book);
+
+  const [bookQ, quantity] = await booksRepo.findAndCount();
+
+  console.log(bookQ, quantity);
+};
