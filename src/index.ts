@@ -1,10 +1,10 @@
-import { AppDataSource } from "./data-source"
-import { Author } from "./entity/Author"
-import { Book } from "./entity/Book"
-import { User } from "./entity/User"
+import { AppDataSource } from "./data-source";
+import { Author } from "./entity/Author";
+import { Book } from "./entity/Book";
+import { User } from "./entity/User";
 
-AppDataSource.initialize().then(async () => {
-
+AppDataSource.initialize()
+  .then(async () => {
     // console.log("Inserting a new user into the database...")
     // const user = new User()
     // user.firstName = "Timber"
@@ -22,14 +22,13 @@ AppDataSource.initialize().then(async () => {
     // })
 
     // ___________________________________
-    const authorRepository = AppDataSource.getRepository(Author)
+    const authorRepository = AppDataSource.getRepository(Author);
     // const author = new Author();
     // author.name = "Fiodor Dostojewski";
     // author.year = 1821;
     // await authorRepository.save(author);
 
-    
-    const booksRepo = AppDataSource.getRepository(Book)
+    const booksRepo = AppDataSource.getRepository(Book);
     // const book1 = new Book();
     // book1.title = "Crime and Punishment";
     // book1.year = 1866;
@@ -48,10 +47,8 @@ AppDataSource.initialize().then(async () => {
 
     // console.log(allAuthorsWithBooks);
 
+    const [bookQ, quantity] = await booksRepo.findAndCount();
 
-    const [bookQ, quantity] = await booksRepo.findAndCount()
- 
     console.log(bookQ, quantity);
-
-    
-}).catch(error => console.log(error))
+  })
+  .catch((error) => console.log(error));

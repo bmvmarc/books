@@ -1,19 +1,17 @@
-import { Entity, ObjectIdColumn, ObjectID, Column, OneToMany, JoinTable } from "typeorm"
-import { Book } from "./Book"
+import { Entity, ObjectIdColumn, ObjectID, Column, OneToMany } from "typeorm";
+import { Book } from "./Book";
 
 @Entity()
 export class Author {
+  @ObjectIdColumn()
+  id: ObjectID;
 
-    @ObjectIdColumn()
-    id: ObjectID
+  @Column()
+  name: string;
 
-    @Column()
-    name: string
+  @Column()
+  year: number;
 
-    @Column()
-    year: number
-
-    @OneToMany(() => Book, (book) => book.author)
-    books: Book[]
-
+  @OneToMany(() => Book, (book) => book.author)
+  books: Book[];
 }
