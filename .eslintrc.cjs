@@ -1,8 +1,6 @@
 module.exports = {
   env: {
     browser: true,
-    commonjs: true,
-    node: true,
     es2021: true,
   },
   extends: [
@@ -17,6 +15,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
+    project: ['./tsconfig.json'],
   },
   rules: {
     indent: "off",

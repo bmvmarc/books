@@ -102,4 +102,4 @@ function BookRoutes(fastify, options, done) {
   done();
 }
 
-module.exports = BookRoutes;
+export default BookRoutes;
