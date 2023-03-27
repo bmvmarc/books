@@ -1,19 +1,19 @@
-import {
-  getBook,
-  getBooks,
-  addBook,
-  deleteBook,
-  updateBook,
-} from "../controllers/books";
+import Fastify from 'fastify';
+
+const fastify = Fastify();
+
+import { BooksController } from '../controllers/books.js';
+
+const booksController = new BooksController();
 
 // Book schema
 const Book = {
-  type: "object",
+  type: 'object',
   properties: {
-    id: { type: "string" },
-    title: { type: "string" },
-    author: { type: "string" },
-    year: { type: "number" },
+    id: { type: 'string' },
+    title: { type: 'string' },
+    author: { type: 'string' },
+    year: { type: 'number' },
   },
 };
 
@@ -22,12 +22,12 @@ const getBooksOpts = {
   schema: {
     response: {
       200: {
-        type: "array",
+        type: 'array',
         books: Book,
       },
     },
   },
-  handler: getBooks,
+  handler: booksController.getBooks,
 };
 
 // Options for get a book
@@ -37,69 +37,67 @@ const getBookOpts = {
       200: Book,
     },
   },
-  handler: getBook,
+  handler: booksController.getBook,
 };
 // Options for create a book
 const postBookOpts = {
   schema: {
     body: {
-      type: "object",
-      required: ["title"],
+      type: 'object',
+      required: ['title'],
       properties: {
-        title: { type: "string" },
-        author: { type: "string" },
-        year: { type: "number" },
+        title: { type: 'string' },
+        author: { type: 'string' },
+        year: { type: 'number' },
+      },
+      response: {
+        201: Book,
       },
     },
-    response: {
-      201: Book,
-    },
+    handler: booksController.addBook,
   },
-  handler: addBook,
 };
 // Options for delete a book
 const deleteBookOpts = {
   schema: {
     response: {
       200: {
-        type: "object",
+        type: 'object',
         properties: {
-          message: { type: "string" },
+          message: { type: 'string' },
         },
       },
     },
   },
-  handler: deleteBook,
+  handler: booksController.deleteBook,
 };
 // Options for channge a book
 const updateBookOpts = {
   schema: {
     body: {
-      type: "object",
+      type: 'object',
       properties: {
-        title: { type: "string" },
+        title: { type: 'string' },
       },
     },
     response: {
       200: Book,
     },
   },
-  handler: updateBook,
+  handler: booksController.updateBook,
 };
 
-function BookRoutes(fastify, options, done) {
+function BookRoutes() {
   // Get all books
-  fastify.get("/books", getBooksOpts);
+  fastify.get('/books', getBooksOpts);
   // Get a single book
-  fastify.get("/books/:id", getBookOpts);
+  fastify.get('/books/:id', getBookOpts);
   // Add an book
-  fastify.post("/books", postBookOpts);
+  fastify.post('/books', deleteBookOpts);
   // Delete an book
-  fastify.delete("/books/:id", deleteBookOpts);
+  fastify.delete('/books/:id', deleteBookOpts);
   // Update an book
-  fastify.put("/books/:id", updateBookOpts);
-
-  done();
+  fastify.put('/books/:id', updateBookOpts);
 }
 
 export default BookRoutes;

@@ -1,10 +1,10 @@
-import { Entity, ObjectIdColumn, ObjectID, Column, OneToMany } from "typeorm";
-import { Book } from "./Book";
+import { Entity, ObjectIdColumn, Column, OneToMany, Relation } from 'typeorm';
+import { Book } from './Book.js';
 
 @Entity()
 export class Author {
   @ObjectIdColumn()
-  id: ObjectID;
+  id: string;
 
   @Column()
   name: string;
@@ -13,5 +13,5 @@ export class Author {
   year: number;
 
   @OneToMany(() => Book, (book) => book.author)
-  books: Book[];
+  books: Relation<Book>[];
 }
