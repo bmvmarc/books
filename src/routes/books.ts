@@ -87,7 +87,7 @@ const updateBookOpts = {
   handler: booksController.updateBook,
 };
 
-function BookRoutes() {
+function BookRoutes(fastify: any, options: any, done: any) {
   // Get all books
   fastify.get('/books', getBooksOpts);
   // Get a single book
@@ -98,6 +98,8 @@ function BookRoutes() {
   fastify.delete('/books/:id', deleteBookOpts);
   // Update an book
   fastify.put('/books/:id', updateBookOpts);
+
+  done();
 }
 
 export default BookRoutes;
