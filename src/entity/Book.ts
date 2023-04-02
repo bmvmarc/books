@@ -1,16 +1,16 @@
-import { Entity, ObjectIdColumn, ObjectID, Column, ManyToOne } from "typeorm";
-import { Author } from "./Author";
+import { Entity, ObjectIdColumn, Column, ManyToOne, Relation } from 'typeorm';
+import { Author } from './Author.js';
 
 @Entity()
 export class Book {
   @ObjectIdColumn()
-  id: ObjectID;
+  id: string;
 
   @Column()
   title: string;
 
   @ManyToOne(() => Author, (author) => author.books)
-  author: Author;
+  author: Relation<Author>;
 
   @Column()
   year: number;

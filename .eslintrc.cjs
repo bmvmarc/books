@@ -21,7 +21,7 @@ module.exports = {
     indent: "off",
     "linebreak-style": ["error", "unix"],
     "no-useless-escape": "off",
-    quotes: ["error", "double", { allowTemplateLiterals: true }],
+    quotes: ["error", "single", { allowTemplateLiterals: true }],
     semi: ["error", "always"],
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "error",
