@@ -14,12 +14,21 @@ class BooksService {
     return books;
   };
 
-  getBook = async (year: number) => {
+  getBook = async (year: string) => {
+    console.log(JSON.stringify(year));
+
     const book = await this.booksRepo.findOneBy({
-      year: year,
+      year: parseInt(year),
     });
     return book;
   };
+
+  // {
+  //   id: "",
+  //   title: "f",
+  //   author: "sdf",
+  //   year: year
+  // }
 
   // addBook(req: FastifyRequest, res: FastifyReply) {
   //   const book = req.body as unknown;

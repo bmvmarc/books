@@ -1,6 +1,15 @@
 import BooksService from '../services/books.js';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+type MyQueryObject = {
+  query?: string;
+};
+
+type MyRequest = FastifyRequest<{
+  Querystring: { queryObj: MyQueryObject };
+  Params: { id: string };
+}>;
+
 class BooksController {
   private repo: BooksService;
   constructor() {
@@ -17,11 +26,14 @@ class BooksController {
     }
   };
 
-  getBook = async (req: FastifyRequest, res: FastifyReply) => {
+  getBook = async (req: MyRequest, res: FastifyReply) => {
     try {
-      const book = await this.repo.getBook(req.id);
+      const { queryObj } = req.query;
+      const { id } = req.params;
+      const book = await this.repo.getBook(id);
       res.status(200).send(book);
-    } catch {
+    } catch (e) {
+      console.log(e);
       res.status(404).send({ error: 'Not Found' });
     }
   };
