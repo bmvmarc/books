@@ -1,6 +1,6 @@
-import { AppDataSource } from './data-source.js';
-import Fastify from 'fastify';
-import BookRoutes from './routes/books.js';
+import { AppDataSource } from "./data-source.js";
+import Fastify from "fastify";
+import BookRoutes from "./routes/books.js";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 

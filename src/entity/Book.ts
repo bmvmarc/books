@@ -1,5 +1,5 @@
 import { Entity, ObjectIdColumn, Column, ManyToOne, Relation } from 'typeorm';
-import { Author } from './Author.js';
+import { Author } from "./Author.js";
 
 @Entity()
 export class Book {

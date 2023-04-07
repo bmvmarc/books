@@ -1,64 +1,78 @@
-import { Book } from '../entity/Book.js';
-import { AppDataSource } from '../data-source.js';
-import { Repository } from 'typeorm';
-
-// const booksRepo = AppDataSource.getRepository(Book);
-
+import { Book } from "../entity/Book.js";
+import { AppDataSource } from "../data-source.js";
+import { Repository } from "typeorm";
+import { MyBodyObject } from "../controllers/books.js";
+import { Author } from "../entity/Author.js";
 class BooksService {
   private booksRepo: Repository<Book>;
+  private authorsRepo: Repository<Author>;
   constructor() {
     this.booksRepo = AppDataSource.getRepository(Book);
+    this.authorsRepo = AppDataSource.getRepository(Author);
   }
   getBooks = async () => {
     const books = await this.booksRepo.find();
     return books;
   };
 
-  getBook = async (year: string) => {
-    console.log(JSON.stringify(year));
-
-    const book = await this.booksRepo.findOneBy({
-      year: parseInt(year),
-    });
+  getBook = async (id: string) => {
+    const books = await this.booksRepo.find();
+    const book = books.find((i) => i.id.toString() === id);
     return book;
   };
 
-  // {
-  //   id: "",
-  //   title: "f",
-  //   author: "sdf",
-  //   year: year
-  // }
+  addBook = async (book: MyBodyObject) => {
+    const { title, author, year } = book;
 
-  // addBook(req: FastifyRequest, res: FastifyReply) {
-  //   const book = req.body as unknown;
-  //   try {
-  //     await this.repo.addBook(book as Book);
-  //   } catch {
-  //     res.status(400).send({ error: 'Bad Request' });
-  //   }
-  //   res.status(201).send({ status: 'Created' });
-  // }
+    let authorObj = await this.authorsRepo.findOneBy({
+      name: author,
+    });
 
-  // updateBook(req: FastifyRequest, res: FastifyReply) {
-  //   try {
-  //     const bookdata = req.body as unknown;
-  //     await this.repo.updateBook(bookdata as Partial<Book>);
-  //   } catch {
-  //     res.status(400).send({ error: 'Bad Request' });
-  //   }
-  //   res.status(200);
-  // }
+    if (!authorObj) {
+      authorObj = new Author();
+      authorObj.name = author;
+      await this.authorsRepo.save(authorObj);
+    }
 
-  // deleteBook(req: FastifyRequest, res: FastifyReply) {
-  //   const id = req.id;
-  //   try {
-  //     await this.repo.deleteBook(id);
-  //   } catch (err: any) {
-  //     res.status(400).send({ error: 'Bad Request' });
-  //   }
-  //   res.status(201).send({});
-  // }
+    try {
+      const newBook = new Book();
+      newBook.title = title;
+      newBook.year = year;
+      newBook.author = authorObj;
+
+      const createdBook = await this.booksRepo.save(newBook);
+      return createdBook;
+    } catch (e) {
+      console.log("\n\n " + e);
+      return { error: "Error while creating the book" };
+    }
+  };
+
+  updateBook = async (id: string, bookdata: MyBodyObject) => {
+    const books = await this.booksRepo.find();
+    const book = books.find((i) => i.id.toString() === id);
+    const { title } = bookdata;
+    console.log("\n\n book: " + JSON.stringify(book));
+
+    if (book) {
+      book.title = title;
+
+      await this.booksRepo.save(book);
+      return book;
+    }
+    return { error: "The book wasn't found" };
+  };
+
+  deleteBook = async (id: string) => {
+    const books = await this.booksRepo.find();
+    const book = books.find((i) => i.id.toString() === id);
+
+    console.log("\n\n book: " + JSON.stringify(book));
+
+    if (book) {
+      await this.booksRepo.delete(book);
+    }
+  };
 }
 
 export default BooksService;

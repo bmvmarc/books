@@ -1,13 +1,20 @@
-import BooksService from '../services/books.js';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import BooksService from "../services/books.js";
+import { FastifyReply, FastifyRequest } from "fastify";
 
 type MyQueryObject = {
   query?: string;
 };
 
+export type MyBodyObject = {
+  title: string;
+  author: string;
+  year: number;
+};
+
 type MyRequest = FastifyRequest<{
   Querystring: { queryObj: MyQueryObject };
   Params: { id: string };
+  Body: MyBodyObject;
 }>;
 
 class BooksController {
@@ -22,51 +29,68 @@ class BooksController {
       res.status(200).send(books);
     } catch (e) {
       console.log(e);
-      res.status(404).send({ error: 'Not Found' });
+      res.status(404).send({ error: "Not Found" });
     }
   };
 
   getBook = async (req: MyRequest, res: FastifyReply) => {
     try {
-      const { queryObj } = req.query;
+      // const { queryObj } = req.query;
       const { id } = req.params;
       const book = await this.repo.getBook(id);
-      res.status(200).send(book);
+      if (book) {
+        res.status(200).send(book);
+      } else {
+        res.status(404).send({ error: "Not Found: " + id });
+      }
     } catch (e) {
       console.log(e);
-      res.status(404).send({ error: 'Not Found' });
+      res.status(404).send({ error: "Not Found" });
     }
   };
 
-  async addBook(req: FastifyRequest, res: FastifyReply) {
-    const book = req.body as unknown;
-    try {
-      // await this.repo.addBook(book as Book);
-    } catch {
-      res.status(400).send({ error: 'Bad Request' });
-    }
-    res.status(201).send({ status: 'Created' });
-  }
+  addBook = async (req: MyRequest, res: FastifyReply) => {
+    const book = req.body;
 
-  async updateBook(req: FastifyRequest, res: FastifyReply) {
     try {
-      const bookdata = req.body as unknown;
-      // await this.repo.updateBook(bookdata as Partial<Book>);
-    } catch {
-      res.status(400).send({ error: 'Bad Request' });
-    }
-    res.status(200);
-  }
+      const result = await this.repo.addBook(book);
 
-  async deleteBook(req: FastifyRequest, res: FastifyReply) {
-    const id = req.id;
-    try {
-      // await this.repo.deleteBook(id);
-    } catch (err: any) {
-      res.status(400).send({ error: 'Bad Request' });
+      if (Object.prototype.hasOwnProperty.call(result, "error")) {
+        res.status(404).send(result);
+      } else {
+        res.status(201).send(result);
+      }
+    } catch (e) {
+      console.log(e);
+      res.status(400).send({ error: "Bad Request" });
     }
-    res.status(201).send({});
-  }
+  };
+
+  updateBook = async (req: MyRequest, res: FastifyReply) => {
+    try {
+      const { id } = req.params;
+      const bookdata = req.body;
+      const result = await this.repo.updateBook(id, bookdata);
+      if (Object.prototype.hasOwnProperty.call(result, "error")) {
+        res.status(404).send(result);
+      } else {
+        res.status(200).send(result);
+      }
+    } catch (e) {
+      console.log(e);
+      res.status(400).send({ error: "Bad Request" });
+    }
+  };
+
+  deleteBook = async (req: MyRequest, res: FastifyReply) => {
+    const { id } = req.params;
+    try {
+      await this.repo.deleteBook(id);
+    } catch (e) {
+      res.status(400).send({ error: "Bad Request" });
+    }
+    res.status(201).send({ message: "deleted" });
+  };
 }
 
 export { BooksController };

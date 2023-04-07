@@ -2,27 +2,29 @@
 
 GET http://localhost:5000/books HTTP/1.1
 
-### GET AN BOOK
-GET http://localhost:5000/books/1869 HTTP/1.1
+### GET AN BOOK 2
+GET http://localhost:5000/books/643044de02ce8d1fd1af43db HTTP/1.1
 
 
-### ADD AN BOOK
+### ADD A BOOK
 POST http://localhost:5000/books HTTP/1.1
 Content-Type: application/json
 
 {
-    "name": "new book"
+  "title": "War and Peace",
+  "author": "Lew Tolstoj",
+  "year": 1898
 }
 
-### DELETE AN BOOK
-DELETE http://localhost:5000/books/2 HTTP/1.1
+### DELETE A BOOK
+DELETE http://localhost:5000/books/64304c33e9709332d1f3a074 HTTP/1.1
 
-### UPDATE AN BOOK
-PUT http://localhost:5000/books/3 HTTP/1.1
+### UPDATE A BOOK
+PUT http://localhost:5000/books/643044de02ce8d1fd1af43db HTTP/1.1
 Content-Type: application/json
 
 {
-    "name": "updated book"
+    "title": "updated book 3"
 }
 #######################################################################################
 ### GET A USER
